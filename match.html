@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f6f2">
+  <title>淳安农产品匹配</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f4f6f2;
+      --surface: #ffffff;
+      --ink: #1e2b24;
+      --muted: #66736b;
+      --line: #dce3dc;
+      --accent: #327453;
+      --accent-dark: #24583e;
+      --accent-soft: #e7f1e9;
+      --warm: #f5f0df;
+      font-family: "Microsoft YaHei UI", "Microsoft YaHei", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--paper); color: var(--ink); }
+    button, input, select { font: inherit; }
+    .page { width: min(1120px, calc(100% - 40px)); margin: 0 auto; padding: 42px 0 64px; }
+    header { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 26px; }
+    .header-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+    .language-switch { display: flex; gap: 2px; padding: 3px; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; }
+    .language-option { min-height: 30px; padding: 0 10px; color: var(--muted); background: transparent; border: 0; border-radius: 3px; font-size: 13px; }
+    .language-option[aria-pressed="true"] { color: var(--accent-dark); background: var(--accent-soft); font-weight: 700; }
+    h1 { margin: 0; font-size: 28px; font-weight: 700; letter-spacing: 0; }
+    .eyebrow { margin: 0 0 8px; color: var(--accent); font-size: 13px; font-weight: 700; }
+    .count { color: var(--muted); font-size: 14px; white-space: nowrap; }
+    main { display: grid; grid-template-columns: minmax(290px, 360px) minmax(0, 1fr); gap: 28px; align-items: start; }
+    .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; }
+    .form-panel { padding: 22px; }
+    h2 { margin: 0; font-size: 18px; font-weight: 700; }
+    .form-heading { margin-bottom: 18px; }
+    .field { padding: 16px 0; border-top: 1px solid var(--line); }
+    .field:first-of-type { border-top: 0; }
+    .field-top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+    .field label { font-size: 14px; font-weight: 600; }
+    output { color: var(--accent-dark); font-size: 14px; font-weight: 700; white-space: nowrap; }
+    input[type="range"] { width: 100%; margin: 4px 0 0; accent-color: var(--accent); cursor: pointer; }
+    .range-ends { display: flex; justify-content: space-between; margin-top: 4px; color: var(--muted); font-size: 12px; }
+    select { width: 100%; height: 40px; padding: 0 10px; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 4px; }
+    select:focus-visible, input:focus-visible, button:focus-visible { outline: 3px solid #98c9a9; outline-offset: 2px; }
+    .actions { display: flex; gap: 10px; margin-top: 20px; }
+    button { min-height: 42px; padding: 0 16px; border: 1px solid var(--line); border-radius: 4px; cursor: pointer; }
+    .primary { flex: 1; color: #fff; background: var(--accent); border-color: var(--accent); font-weight: 700; }
+    .primary:hover { background: var(--accent-dark); }
+    .secondary { color: var(--ink); background: #fff; }
+    .secondary:hover { background: var(--paper); }
+    .results-section { min-width: 0; }
+    .results-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin: 4px 0 14px; }
+    .results-heading p { margin: 0; color: var(--muted); font-size: 13px; }
+    #results { display: grid; gap: 12px; }
+    .product { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 16px; padding: 18px; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; }
+    .product-image { display: block; width: 120px; height: 120px; object-fit: cover; background: var(--paper); border-radius: 4px; }
+    .product-content { min-width: 0; }
+    .product-top { display: flex; align-items: start; justify-content: space-between; gap: 16px; }
+    .rank { display: inline-block; margin-bottom: 8px; color: var(--accent-dark); font-size: 12px; font-weight: 700; }
+    .product h3 { margin: 0; font-size: 17px; line-height: 1.45; }
+    .score { min-width: 78px; padding: 7px 9px; color: var(--accent-dark); background: var(--accent-soft); border-radius: 4px; text-align: center; font-size: 14px; font-weight: 700; white-space: nowrap; }
+    .facts { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 14px; }
+    .fact { padding: 5px 8px; color: #435148; background: #f2f5f1; border-radius: 3px; font-size: 12px; }
+    .product-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 14px; }
+    .purchase { display: inline-flex; align-items: center; justify-content: center; min-height: 34px; padding: 0 14px; color: #fff; background: var(--accent); border: 1px solid var(--accent); border-radius: 4px; font-size: 14px; font-weight: 700; text-decoration: none; cursor: pointer; }
+    .purchase:hover { background: var(--accent-dark); }
+    .purchase-note { color: var(--muted); font-size: 12px; overflow-wrap: anywhere; }
+    .purchase-fallback { width: min(100%, 420px); min-width: 0; min-height: 54px; padding: 7px 8px; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 4px; font: inherit; font-size: 12px; overflow-wrap: anywhere; resize: vertical; }
+    .no-purchase { color: var(--muted); font-size: 13px; }
+    .empty { padding: 32px 20px; color: var(--muted); background: var(--surface); border: 1px dashed var(--line); border-radius: 6px; text-align: center; }
+    .error { padding: 14px; color: #8c352d; background: #fff0ed; border: 1px solid #efc9c2; border-radius: 4px; }
+
+    @media (max-width: 760px) {
+      .page { width: min(100% - 28px, 560px); padding: 28px 0 44px; }
+      header { align-items: start; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+      .header-meta { width: 100%; flex-direction: row; justify-content: space-between; align-items: center; }
+      h1 { font-size: 24px; }
+      main { grid-template-columns: 1fr; gap: 24px; }
+      .form-panel { padding: 18px; }
+      .results-heading { align-items: start; flex-direction: column; gap: 5px; }
+      .product { grid-template-columns: 88px minmax(0, 1fr); gap: 12px; padding: 14px; }
+      .product-image { width: 88px; height: 88px; }
+      .product-top { gap: 8px; }
+      .score { min-width: 78px; padding: 6px; font-size: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div>
+        <p class="eyebrow" data-i18n="eyebrow">淳安 · 本地农产品</p>
+        <h1 data-i18n="pageHeading">找到适合你的产品</h1>
+      </div>
+      <div class="header-meta">
+        <div class="language-switch" role="group" aria-label="语言">
+          <button class="language-option" type="button" data-language="zh" aria-pressed="true">中文</button>
+          <button class="language-option" type="button" data-language="en" aria-pressed="false">English</button>
+        </div>
+        <div id="product-count" class="count" aria-live="polite" data-i18n="loading">正在读取产品数据…</div>
+      </div>
+    </header>
+
+    <main>
+      <form id="preferences" class="panel form-panel">
+        <div class="form-heading"><h2 data-i18n="formHeading">选择购买偏好</h2></div>
+
+        <div class="field">
+          <div class="field-top"><label for="price" data-i18n="priceLabel">预算上限</label><output id="price-value" for="price"></output></div>
+          <input id="price" name="price" type="range" min="0" max="400" step="0.01" value="100">
+          <div class="range-ends"><span>¥0</span><span>¥400</span></div>
+        </div>
+
+        <div class="field">
+          <div class="field-top"><label for="shelf-life" data-i18n="shelfLifeLabel">最低保质期</label><output id="shelf-life-value" for="shelf-life"></output></div>
+          <input id="shelf-life" name="shelf_life" type="range" min="2" max="720" step="1" value="180">
+          <div class="range-ends"><span data-i18n="shelfLifeMin">2 天</span><span data-i18n="shelfLifeMax">720 天</span></div>
+        </div>
+
+        <div class="field">
+          <div class="field-top"><label for="safety-quality" data-i18n="safetyQualityLabel">最低安全质量证据</label><output id="safety-quality-value" for="safety-quality"></output></div>
+          <input id="safety-quality" name="safety_quality" type="range" min="0" max="3" step="1" value="1">
+          <div class="range-ends"><span data-i18n="evidenceMin">0 项</span><span data-i18n="evidenceMax">3 项</span></div>
+        </div>
+
+        <div class="field">
+          <div class="field-top"><label for="supply-stability" data-i18n="supplyStabilityLabel">最低供货稳定性</label><output id="supply-stability-value" for="supply-stability"></output></div>
+          <input id="supply-stability" name="supply_stability" type="range" min="1" max="3" step="1" value="1">
+          <div class="range-ends"><span data-i18n="low">低</span><span data-i18n="high">高</span></div>
+        </div>
+
+        <div class="field">
+          <div class="field-top"><label for="branded" data-i18n="brandLabel">品牌</label></div>
+          <select id="branded" name="branded">
+            <option value="any" data-i18n="any">不限</option>
+            <option value="1" data-i18n="branded">有品牌</option>
+            <option value="0" data-i18n="unbranded">无品牌</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <div class="field-top"><label for="online-availability" data-i18n="onlineLabel">线上购买</label></div>
+          <select id="online-availability" name="online_availability">
+            <option value="any" data-i18n="any">不限</option>
+            <option value="1" data-i18n="onlineYes">可线上购买</option>
+            <option value="0" data-i18n="onlineNo">未列出线上渠道</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <div class="field-top"><label for="seasonality" data-i18n="seasonLabel">供应季节</label></div>
+          <select id="seasonality" name="seasonality">
+            <option value="any" data-i18n="any">不限</option>
+            <option value="0" data-i18n="yearRound">全年供应</option>
+            <option value="1" data-i18n="seasonal">季节性供应</option>
+          </select>
+        </div>
+
+        <div class="actions">
+          <button class="primary" type="submit" data-i18n="matchButton">匹配产品</button>
+          <button class="secondary" id="reset" type="reset" data-i18n="resetButton">重置</button>
+        </div>
+      </form>
+
+      <section class="results-section" aria-labelledby="results-title">
+        <div class="results-heading">
+          <h2 id="results-title" data-i18n="resultsHeading">为你推荐</h2>
+          <p id="result-summary" aria-live="polite" data-i18n="adjustToMatch">调整偏好后开始匹配</p>
+        </div>
+        <div id="results" aria-live="polite">
+          <div class="empty" data-i18n="loading">正在读取产品数据…</div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const form = document.querySelector('#preferences');
+    const results = document.querySelector('#results');
+    const summary = document.querySelector('#result-summary');
+    const productCount = document.querySelector('#product-count');
+    const translations = {
+      zh: {
+        pageTitle: '淳安农产品匹配', languageLabel: '语言', productCount: count => `共 ${count} 款产品`,
+        static: {
+          eyebrow: '淳安 · 本地农产品', pageHeading: '找到适合你的产品', loading: '正在读取产品数据…',
+          formHeading: '选择购买偏好', priceLabel: '预算上限', shelfLifeLabel: '最低保质期',
+          shelfLifeMin: '2 天', shelfLifeMax: '720 天', safetyQualityLabel: '最低安全质量证据',
+          evidenceMin: '0 项', evidenceMax: '3 项', supplyStabilityLabel: '最低供货稳定性',
+          low: '低', high: '高', brandLabel: '品牌', any: '不限', branded: '有品牌', unbranded: '无品牌',
+          onlineLabel: '线上购买', onlineYes: '可线上购买', onlineNo: '未列出线上渠道',
+          seasonLabel: '供应季节', yearRound: '全年供应', seasonal: '季节性供应',
+          matchButton: '匹配产品', resetButton: '重置', resultsHeading: '为你推荐', adjustToMatch: '调整偏好后开始匹配'
+        },
+        supplyLabels: { 1: '低', 2: '中', 3: '高' },
+        priceValue: value => `¥${Number(value).toFixed(2)}`, shelfLifeValue: value => `${value} 天`,
+        qualityValue: value => `${value} / 3`, rank: index => `推荐 ${index + 1}`,
+        score: value => `${value.toFixed(2)}% 匹配`, summary: count => `为你展示 ${count} 款匹配产品`,
+        facts: {
+          price: value => `参考价 ¥${Number(value).toFixed(2)}`, shelfLife: value => `保质期 ${value} 天`,
+          branded: value => value ? '有品牌' : '无品牌', quality: value => `安全质量证据 ${value}/3`,
+          online: value => value ? '可线上购买' : '未列出线上渠道',
+          seasonal: value => value ? '季节性供应' : '全年供应',
+          supply: value => `供货稳定性${translations.zh.supplyLabels[value]}`
+        },
+        buy: '购买', copied: '已复制微信小店链接，可粘贴至微信打开。',
+        copyUnavailable: '无法自动复制，请复制下方链接到微信打开：',
+        wechatLinkLabel: '微信小店购买链接', noPurchase: '暂无购买链接', loadError: '产品数据暂不可用'
+      },
+      en: {
+        pageTitle: 'Chun’an Product Match', languageLabel: 'Language', productCount: count => `${count} products`,
+        static: {
+          eyebrow: 'CHUN’AN · LOCAL PRODUCE', pageHeading: 'Find products for you', loading: 'Loading products…',
+          formHeading: 'Your preferences', priceLabel: 'Maximum budget', shelfLifeLabel: 'Minimum shelf life',
+          shelfLifeMin: '2 days', shelfLifeMax: '720 days', safetyQualityLabel: 'Minimum safety and quality evidence',
+          evidenceMin: '0 items', evidenceMax: '3 items', supplyStabilityLabel: 'Minimum supply stability',
+          low: 'Low', high: 'High', brandLabel: 'Brand', any: 'Any', branded: 'Branded', unbranded: 'Unbranded',
+          onlineLabel: 'Online availability', onlineYes: 'Available online', onlineNo: 'No online listing',
+          seasonLabel: 'Supply season', yearRound: 'Year-round', seasonal: 'Seasonal',
+          matchButton: 'Find matches', resetButton: 'Reset', resultsHeading: 'Recommended for you',
+          adjustToMatch: 'Adjust your preferences to find matches'
+        },
+        supplyLabels: { 1: 'Low', 2: 'Medium', 3: 'High' },
+        priceValue: value => `¥${Number(value).toFixed(2)}`, shelfLifeValue: value => `${value} days`,
+        qualityValue: value => `${value} / 3`, rank: index => `Match ${index + 1}`,
+        score: value => `${value.toFixed(2)}% match`, summary: count => `Showing ${count} matching products`,
+        facts: {
+          price: value => `Price ¥${Number(value).toFixed(2)}`, shelfLife: value => `Shelf life: ${value} days`,
+          branded: value => value ? 'Branded' : 'Unbranded', quality: value => `Safety and quality evidence: ${value}/3`,
+          online: value => value ? 'Available online' : 'No online listing',
+          seasonal: value => value ? 'Seasonal supply' : 'Year-round supply',
+          supply: value => `Supply stability: ${translations.en.supplyLabels[value]}`
+        },
+        buy: 'Buy', copied: 'WeChat link copied. Paste it into WeChat to open.',
+        copyUnavailable: 'Copy the link below and open it in WeChat:',
+        wechatLinkLabel: 'WeChat purchase link', noPurchase: 'No purchase link available',
+        loadError: 'Product data is unavailable'
+      }
+    };
+    let language = 'zh';
+    let products = [];
+
+    const controls = {
+      price: document.querySelector('#price'),
+      shelf_life: document.querySelector('#shelf-life'),
+      safety_quality: document.querySelector('#safety-quality'),
+      supply_stability: document.querySelector('#supply-stability')
+    };
+
+    function updateOutputs() {
+      const copy = translations[language];
+      document.querySelector('#price-value').textContent = copy.priceValue(controls.price.value);
+      document.querySelector('#shelf-life-value').textContent = copy.shelfLifeValue(controls.shelf_life.value);
+      document.querySelector('#safety-quality-value').textContent = copy.qualityValue(controls.safety_quality.value);
+      document.querySelector('#supply-stability-value').textContent = copy.supplyLabels[controls.supply_stability.value];
+    }
+
+    function setLanguage(nextLanguage) {
+      language = nextLanguage;
+      const copy = translations[language];
+      document.documentElement.lang = language === 'zh' ? 'zh-CN' : 'en';
+      document.title = copy.pageTitle;
+      document.querySelector('.language-switch').setAttribute('aria-label', copy.languageLabel);
+      document.querySelectorAll('[data-i18n]').forEach(element => {
+        element.textContent = copy.static[element.dataset.i18n];
+      });
+      document.querySelectorAll('[data-language]').forEach(button => {
+        button.setAttribute('aria-pressed', String(button.dataset.language === language));
+      });
+      updateOutputs();
+      if (products.length) {
+        productCount.textContent = copy.productCount(products.length);
+        renderMatches();
+      }
+    }
+
+    function readPreferences() {
+      const data = new FormData(form);
+      return {
+        price: Number(data.get('price')),
+        shelf_life: Number(data.get('shelf_life')),
+        safety_quality: Number(data.get('safety_quality')),
+        supply_stability: Number(data.get('supply_stability')),
+        branded: data.get('branded'),
+        online_availability: data.get('online_availability'),
+        seasonality: data.get('seasonality')
+      };
+    }
+
+    function scoreProduct(product, preferences) {
+      const attrs = product.attributes;
+      const budgetScore = preferences.price >= 400
+        ? 1
+        : attrs.price <= preferences.price
+          ? 1
+          : Math.max(0, 1 - (attrs.price - preferences.price) / Math.max(1, 400 - preferences.price));
+      const minimumScore = (actual, desired) => desired === 0 ? 1 : Math.min(1, actual / desired);
+      const preferenceScore = (actual, desired) => desired === 'any' || actual === Number(desired) ? 1 : 0;
+      const scores = [
+        budgetScore,
+        minimumScore(attrs.shelf_life, preferences.shelf_life),
+        minimumScore(attrs.safety_quality, preferences.safety_quality),
+        minimumScore(attrs.supply_stability, preferences.supply_stability),
+        preferenceScore(attrs.branded, preferences.branded),
+        preferenceScore(attrs.online_availability, preferences.online_availability),
+        preferenceScore(attrs.seasonality, preferences.seasonality)
+      ];
+      return scores.reduce((sum, score) => sum + score, 0) / scores.length * 100;
+    }
+
+    function createFact(text) {
+      const fact = document.createElement('span');
+      fact.className = 'fact';
+      fact.textContent = text;
+      return fact;
+    }
+
+    function renderMatches() {
+      if (!products.length) return;
+      const matches = products
+        .map(product => ({ product, score: scoreProduct(product, readPreferences()) }))
+        .sort((a, b) => b.score - a.score || a.product.id.localeCompare(b.product.id))
+        .slice(0, 3);
+
+      results.replaceChildren();
+      const copy = translations[language];
+      summary.textContent = copy.summary(matches.length);
+
+      for (const [index, match] of matches.entries()) {
+        const { product, score } = match;
+        const attrs = product.attributes;
+        const card = document.createElement('article');
+        card.className = 'product';
+
+        const image = document.createElement('img');
+        image.className = 'product-image';
+        image.src = `./images/product${Number(product.id.slice(1))}.png`;
+        image.alt = product.name;
+        image.loading = 'eager';
+        image.addEventListener('error', () => {
+          image.remove();
+          card.style.gridTemplateColumns = '1fr';
+        });
+
+        const content = document.createElement('div');
+        content.className = 'product-content';
+
+        const top = document.createElement('div');
+        top.className = 'product-top';
+        const titleGroup = document.createElement('div');
+        const rank = document.createElement('span');
+        rank.className = 'rank';
+        rank.textContent = copy.rank(index);
+        const title = document.createElement('h3');
+        title.textContent = language === 'zh' ? product.name : product.name_en;
+        titleGroup.append(rank, title);
+        const scoreLabel = document.createElement('span');
+        scoreLabel.className = 'score';
+        scoreLabel.textContent = copy.score(score);
+        top.append(titleGroup, scoreLabel);
+
+        const facts = document.createElement('div');
+        facts.className = 'facts';
+        facts.append(
+          createFact(copy.facts.price(attrs.price)),
+          createFact(copy.facts.shelfLife(attrs.shelf_life)),
+          createFact(copy.facts.branded(attrs.branded)),
+          createFact(copy.facts.quality(attrs.safety_quality)),
+          createFact(copy.facts.online(attrs.online_availability)),
+          createFact(copy.facts.seasonal(attrs.seasonality)),
+          createFact(copy.facts.supply(attrs.supply_stability))
+        );
+
+        const actions = document.createElement('div');
+        actions.className = 'product-actions';
+        if (product.purchase_url && /^https?:\/\//i.test(product.purchase_url)) {
+          const purchase = document.createElement('a');
+          purchase.className = 'purchase';
+          purchase.href = product.purchase_url;
+          purchase.target = '_blank';
+          purchase.rel = 'noopener noreferrer';
+          purchase.textContent = copy.buy;
+          actions.append(purchase);
+        } else if (product.purchase_url?.startsWith('#微信小店://')) {
+          const purchase = document.createElement('button');
+          purchase.className = 'purchase';
+          purchase.type = 'button';
+          purchase.textContent = copy.buy;
+          const note = document.createElement('span');
+          note.className = 'purchase-note';
+          purchase.addEventListener('click', async () => {
+            try {
+              await navigator.clipboard.writeText(product.purchase_url);
+              note.textContent = translations[language].copied;
+            } catch {
+              note.textContent = translations[language].copyUnavailable;
+              if (!actions.querySelector('.purchase-fallback')) {
+                const fallback = document.createElement('textarea');
+                fallback.className = 'purchase-fallback';
+                fallback.rows = 2;
+                fallback.value = product.purchase_url;
+                fallback.readOnly = true;
+                fallback.setAttribute('aria-label', translations[language].wechatLinkLabel);
+                fallback.addEventListener('focus', () => fallback.select());
+                actions.append(fallback);
+                fallback.focus();
+                fallback.select();
+              }
+            }
+          });
+          actions.append(purchase, note);
+        } else {
+          const unavailable = document.createElement('span');
+          unavailable.className = 'no-purchase';
+          unavailable.textContent = copy.noPurchase;
+          actions.append(unavailable);
+        }
+
+        content.append(top, facts, actions);
+        card.append(image, content);
+        results.append(card);
+      }
+    }
+
+    for (const control of Object.values(controls)) control.addEventListener('input', updateOutputs);
+    document.querySelectorAll('[data-language]').forEach(button => {
+      button.addEventListener('click', () => setLanguage(button.dataset.language));
+    });
+    form.addEventListener('submit', event => {
+      event.preventDefault();
+      renderMatches();
+    });
+    form.addEventListener('reset', () => requestAnimationFrame(() => {
+      updateOutputs();
+      if (products.length) renderMatches();
+    }));
+
+    setLanguage(language);
+    fetch('./data/products.json')
+      .then(response => {
+        if (!response.ok) throw new Error('Product data request failed');
+        return response.json();
+      })
+      .then(data => {
+        products = data;
+        productCount.textContent = translations[language].productCount(products.length);
+        renderMatches();
+      })
+      .catch(() => {
+        productCount.textContent = translations[language].loadError;
+        summary.textContent = '';
+        results.innerHTML = `<div class="error">${translations[language].loadError}</div>`;
+      });
+  </script>
+</body>
+</html>

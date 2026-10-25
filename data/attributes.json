@@ -1,0 +1,18 @@
+{
+    "price": {
+        "min": 0,
+        "max": 400,
+        "step": 0.01
+    },
+    "branded": { "min": 0, "max": 1, "step": 1, "labels": { "0": "No brand listed", "1": "Brand listed" } },
+    "shelf_life": { "min": 2, "max": 720, "step": 1, "unit": "days" },
+    "safety_quality": {
+        "min": 0,
+        "max": 3,
+        "step": 1,
+        "score_components": ["certification listed", "traceability listed", "quality or safety evidence listed"]
+    },
+    "online_availability": { "min": 0, "max": 1, "step": 1, "labels": { "0": "Not listed as available online", "1": "Available online" } },
+    "seasonality": { "min": 0, "max": 1, "step": 1, "labels": { "0": "Year-round", "1": "Seasonal" } },
+    "supply_stability": { "min": 1, "max": 3, "step": 1, "labels": { "1": "Low", "2": "Medium", "3": "High" } }
+}
