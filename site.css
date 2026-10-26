@@ -22,6 +22,8 @@ a { color: inherit; }
 .main-nav a { padding: 10px 12px; border-radius: 4px; color: var(--muted); font-size: 14px; text-decoration: none; }
 .main-nav a:hover, .main-nav a:focus-visible { color: var(--accent-dark); background: var(--accent-soft); }
 .main-nav a[aria-current="page"] { color: var(--accent-dark); background: var(--accent-soft); font-weight: 700; }
+.main-nav a[href="match.html"] { color: #fff; background: var(--accent); font-weight: 700; }
+.main-nav a[href="match.html"]:hover { background: var(--accent-dark); }
 .main-nav a:focus-visible, .brand:focus-visible { outline: 3px solid #98c9a9; outline-offset: 2px; }
 .page { width: min(1120px, calc(100% - 40px)); min-height: calc(100vh - 150px); margin: 0 auto; padding: 58px 0 80px; }
 .eyebrow { margin: 0 0 10px; color: var(--accent); font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }

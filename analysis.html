@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f4f6f2">
-  <title>About Chun'an | Chun'an Information Gap Project</title>
+  <title>Data Analysis | Chun'an Information Gap Project</title>
   <link rel="stylesheet" href="site.css">
 </head>
 <body>
@@ -27,12 +27,45 @@
   <main class="page">
     <h1>Data Analysis</h1>
     <p class="eyebrow"><br/>From Raw Field Data to a Reproducible and Explainable Analysis</p>
-    <h2>DATA GRAPHS</h2>
-    <section class="content-card"><p>After using pandas and NumPy, I found the following results:</p></section>
-    <img src="./images/Graph A clear.png" style="width:822px; float:middle">
-    <img src="./images/Graph B clear.png" style="width:822px; float:middle">
-    <img src="./images/Graph C clear.png" style="width:822px; float:middle">
-    <img src="./images/Graph D clear.png" style="width:822px; float:middle">
+    <h2>DATA ANALYSIS PROCESS OVERVIEW</h2>
+    <img src="./images/Analysis Steps.png" style="width:822px; float:middle">
+    <h2>DATA ENGINEERING</h2>
+    <section class="content-card">
+      <ul>
+        <li>pandas imported both Excel sources and created raw, clean, and coded tables.</li>
+        <li>Automated checks flagged ineligible cases, rapid completion, duplicate IPs/response patterns, missing values, and straight-lining.</li>
+        <li>Multi-select items were converted to 0/1 variables; Likert scale responses retained ordered 1–5 coding.</li>
+      </ul>
+    </section>
+    <h2>STATISTICAL ANALYSIS</h2>
+    <section class="content-card">
+      <ul>
+        <li>Descriptive outputs: means, standard deviations, Top-2-box rates, Top-3 selection rates, and multi-response percentages.</li>
+        <li>Spearman correlations tested relationships among online-shopping frequency, purchase intention, explanation-based trust, and tool-use intention.</li>
+        <li>Mann–Whitney or Kruskal–Wallis tests compared relevant consumer groups without assuming normality.</li>
+      </ul>
+    </section>
+    <h2>GAP & VISUAL ANALYTICS</h2>
+    <section class="content-card">
+      <ul>
+        <li>NumPy normalized mean importance to a 0–1 scale: (mean − 1) / 4.</li>
+        <li>Attribute Gap = normalized consumer importance − product-information coverage.</li>
+        <li>seaborn and Plotly produced ranked bars, heatmaps, group comparisons, and interactive figures.</li>
+      </ul>
+    </section>
+    <h2>EXPLAINABLE MATCHING</h2>
+    <section class="content-card">
+      <ul>
+        <li>Consumer preferences and product features were encoded as comparable vectors.</li>
+        <li>Budget/category filters were applied before weighted scoring and cosine similarity ranked top 3 products.</li>
+        <li>The system reports the highest-contributing attributes as human-readable recommendation reasons.</li>
+      </ul>
+    </section>
+    <h2>FINAL DATA GRAPHS</h2>
+    <img src="./images/Graph A.png" style="width:822px; float:middle">
+    <img src="./images/Graph B.png" style="width:822px; float:middle">
+    <img src="./images/Graph C.png" style="width:822px; float:middle">
+    <img src="./images/Graph D.png" style="width:822px; float:middle">
     <h2>KEY FINDING OF THE DATA ANALYSIS</h2>
     <section class="content-card"><p>The central problem is an evidence gap, not a lack of interest. Consumers prioritize safety, quality, trust, traceability, and certification, yet these attributes are least consistently documented.</p></section>
 </body>

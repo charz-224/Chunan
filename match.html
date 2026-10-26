@@ -24,6 +24,9 @@
     body { margin: 0; background: var(--paper); color: var(--ink); }
     button, input, select { font: inherit; }
     .page { width: min(1120px, calc(100% - 40px)); margin: 0 auto; padding: 42px 0 64px; }
+    .brand-row { display: flex; min-height: 48px; align-items: center; margin-bottom: 24px; border-bottom: 1px solid var(--line); }
+    .brand { color: var(--accent-dark); font-size: 18px; font-weight: 700; text-decoration: none; }
+    .brand:focus-visible { outline: 3px solid #98c9a9; outline-offset: 2px; }
     header { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 26px; }
     .header-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
     .language-switch { display: flex; gap: 2px; padding: 3px; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; }
@@ -91,6 +94,7 @@
 </head>
 <body>
   <div class="page">
+    <div class="brand-row"><a class="brand" href="index.html" data-i18n="projectTitle">Chun'an Information Gap Project</a></div>
     <header>
       <div>
         <p class="eyebrow" data-i18n="eyebrow">淳安 · 本地农产品</p>
@@ -187,7 +191,7 @@
       zh: {
         pageTitle: '淳安农产品匹配', languageLabel: '语言', productCount: count => `共 ${count} 款产品`,
         static: {
-          eyebrow: '淳安 · 本地农产品', pageHeading: '找到适合你的产品', loading: '正在读取产品数据…',
+          projectTitle: '淳安信息差项目', eyebrow: '淳安 · 本地农产品', pageHeading: '找到适合你的产品', loading: '正在读取产品数据…',
           formHeading: '选择购买偏好', priceLabel: '预算上限', shelfLifeLabel: '最低保质期',
           shelfLifeMin: '2 天', shelfLifeMax: '720 天', safetyQualityLabel: '最低安全质量证据',
           evidenceMin: '0 项', evidenceMax: '3 项', supplyStabilityLabel: '最低供货稳定性',
@@ -207,14 +211,14 @@
           seasonal: value => value ? '季节性供应' : '全年供应',
           supply: value => `供货稳定性${translations.zh.supplyLabels[value]}`
         },
-        buy: '购买', copied: '已复制微信小店链接，可粘贴至微信打开。',
+        buy: '打开原产品链接', copied: '已复制微信小店链接，可粘贴至微信打开。',
         copyUnavailable: '无法自动复制，请复制下方链接到微信打开：',
         wechatLinkLabel: '微信小店购买链接', noPurchase: '暂无购买链接', loadError: '产品数据暂不可用'
       },
       en: {
         pageTitle: 'Chun’an Product Match', languageLabel: 'Language', productCount: count => `${count} products`,
         static: {
-          eyebrow: 'CHUN’AN · LOCAL PRODUCE', pageHeading: 'Find products for you', loading: 'Loading products…',
+          projectTitle: "Chun'an Information Gap Project", eyebrow: 'CHUN’AN · LOCAL PRODUCE', pageHeading: 'Find products for you', loading: 'Loading products…',
           formHeading: 'Your preferences', priceLabel: 'Maximum budget', shelfLifeLabel: 'Minimum shelf life',
           shelfLifeMin: '2 days', shelfLifeMax: '720 days', safetyQualityLabel: 'Minimum safety and quality evidence',
           evidenceMin: '0 items', evidenceMax: '3 items', supplyStabilityLabel: 'Minimum supply stability',
@@ -235,7 +239,7 @@
           seasonal: value => value ? 'Seasonal supply' : 'Year-round supply',
           supply: value => `Supply stability: ${translations.en.supplyLabels[value]}`
         },
-        buy: 'Buy', copied: 'WeChat link copied. Paste it into WeChat to open.',
+        buy: 'View Original Listing', copied: 'WeChat link copied. Paste it into WeChat to open.',
         copyUnavailable: 'Copy the link below and open it in WeChat:',
         wechatLinkLabel: 'WeChat purchase link', noPurchase: 'No purchase link available',
         loadError: 'Product data is unavailable'
